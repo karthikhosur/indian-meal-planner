@@ -62,12 +62,56 @@ filtered_df = filter_data(df, selected_cuisines,
 # Get a random recipe
 random_recipe, recipe_info, recipe_url = get_random_recipe(filtered_df)
 
-# Display recipe information
-st.write(f"## {random_recipe}")
-st.write(f"**Ingredients:** {recipe_info['Ingredients']}")
-st.write(f"**Diet:** {recipe_info['Diet']}")
-st.write(f"**Cook Time (mins):** {recipe_info['CookTimeInMins']}")
-st.write(f"**Prep Time (mins):** {recipe_info['PrepTimeInMins']}")
+# Add a title for the recipe
+st.title("🍽️ Recipe Information")
+
+# Display the recipe name with a custom font size and weight
+st.markdown(
+    f"<h2 style='font-weight: bold;'>{random_recipe}</h2>", unsafe_allow_html=True)
+
+# Format and display the ingredients list
+st.subheader("Ingredients")
+# ingredients_list = ', '.join(
+#     [f"{ingredient}" for ingredient in recipe_info['Ingredients']])
+# ingredients_list = recipe_info['Ingredients'].split(',')
+
+st.subheader("Ingredients")
+ingredients_list = recipe_info['Ingredients'].split(',')
+
+st.write('\n'.join([f"- {ingredient}" for ingredient in ingredients_list]))
+# Display diet, cook time, and prep time in a nicely formatted way
+st.subheader("Details")
+st.markdown(f"""
+<style>
+    .details {{
+        display: flex;
+        justify-content: space-between;
+    }}
+    .detail {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }}
+    .detail-title {{
+        font-weight: bold;
+    }}
+</style>
+
+<div class="details">
+    <div class="detail">
+        <span class="detail-title">Diet</span>
+        <span>{recipe_info['Diet']}</span>
+    </div>
+    <div class="detail">
+        <span class="detail-title">Cook Time (mins)</span>
+        <span>{recipe_info['CookTimeInMins']}</span>
+    </div>
+    <div class="detail">
+        <span class="detail-title">Prep Time (mins)</span>
+        <span>{recipe_info['PrepTimeInMins']}</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # Add buttons for navigation and redirecting to URL
 prev_button, next_button = st.columns(2)
@@ -83,3 +127,7 @@ if prev_button.button('Previous Recipe'):
 elif next_button.button('Next Recipe') and len(filtered_df) > 1:
     # Get next recipe in filtered DataFrame
     next_recipe, recipe_info, recipe_url = get_next_recipe
+
+# Display the recipe URL again
+st.markdown(
+    f"<a href='{recipe_url}'>View recipe source</a>", unsafe_allow_html=True)
